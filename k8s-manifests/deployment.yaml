@@ -16,7 +16,7 @@ spec:
         role: express-api
     spec:
       containers:
-      - image: mohamadkamal/ci-for-git-ops-pipeline
+      - image: mohamadkamal/ci-for-git-ops-pipeline:1.0.13
         name: express-api
         ports:
         - containerPort: 8080
