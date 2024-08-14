@@ -23,6 +23,8 @@ jobs:
         uses: phips28/gh-action-bump-version@v11.0.7
         with:
           default: patch
+        env:
+          PACKAGEJSON_DIR:  'application'
 
       - name: Commit changes
         run: |
