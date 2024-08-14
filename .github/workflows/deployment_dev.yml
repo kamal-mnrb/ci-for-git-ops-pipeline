@@ -1,0 +1,58 @@
+name: Build, Push, and Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract version from package.json
+        id: get_version
+        run: echo "VERSION=$(jq -r '.version' < application/package.json)" >> $GITHUB_ENV
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./application
+          push: true
+          tags: mohamadkamal/ci-for-git-ops-pipeline:latest
+          platforms: linux/amd64,linux/arm64
+      
+      - name: Generate random key
+        id: generate_key
+        run: echo "RANDOM_KEY=$(openssl rand -hex 16)" >> $GITHUB_ENV
+
+      - name: Write key to file
+        run: |
+          echo $RANDOM_KEY > dev-manifests/random_key.txt
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add .
+          git commit -m "Add random key"
+          git push
+        env:
+          RANDOM_KEY: ${{ env.RANDOM_KEY }}

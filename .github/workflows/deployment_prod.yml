@@ -1,9 +1,8 @@
 name: Build, Push, and Deploy
 
 on:
-  push:
-    branches:
-      - master
+  release:
+    types: [created]
 
 jobs:
   build-and-deploy:
@@ -18,13 +17,23 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Bump version
-        id: bump_version
-        uses: phips28/gh-action-bump-version@v11.0.7
-        with:
-          default: patch
-        env:
-          PACKAGEJSON_DIR:  'application'
+      - name: Get release tag
+        id: get_tag
+        run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
+
+      - name: Update package.json version
+        run: |
+          tag=${{ steps.get_tag.outputs.tag }}
+          jq --arg new_version "$tag" '.version = $new_version' application/package.json > tmp.$$.json && mv tmp.$$.json application/package.json
+        shell: bash
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add .
+          git commit -m "Update package.json version to ${{ steps.get_tag.outputs.tag }}"
+          git push
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -60,8 +69,8 @@ jobs:
           kustomize build overlays/dev > ../k8s-manifests/deployment.yaml
           echo 'Updated the deployment manifest file being watched by GitOps tool...'
           cd ..
-          git config user.name "githubaction"
-          git config user.email "booluat@yahoo.com"
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
           git add .
           git commit -m "Update image to your-repo/your-app:latest"
           git push
