@@ -30,7 +30,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'booluat@yahoo.com'
-          git add package.json
+          git add .
           git commit -m "Bump version to ${{ steps.bump_version.outputs.new_version }}"
           git push
 
