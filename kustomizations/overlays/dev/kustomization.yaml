@@ -1,6 +1,6 @@
 resources:
   - ../../base
 images:
-  - name: lukondefmwila/express-test
-    newName: lukondefmwila/express-test
+  - name: mohamadkamal/ci-for-git-ops-pipeline
+    newName: mohamadkamal/ci-for-git-ops-pipeline
     newTag: 1.0.11
