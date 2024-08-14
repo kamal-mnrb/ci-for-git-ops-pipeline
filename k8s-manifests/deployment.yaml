@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: express-api
-  namespace: express-nodejs
+  namespace: default
 spec:
   replicas: 2
   selector:
@@ -16,7 +16,7 @@ spec:
         role: express-api
     spec:
       containers:
-      - image: lukondefmwila/express-test:1.0.3
+      - image: lukondefmwila/express-test:1.0.4
         name: express-api
         ports:
         - containerPort: 8080
