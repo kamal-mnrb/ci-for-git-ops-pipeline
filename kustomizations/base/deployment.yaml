@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: express-api
-        image: lukondefmwila/express-test
+        image: mohamadkamal/ci-for-git-ops-pipeline
         resources:
           limits:
             memory: "128Mi"
