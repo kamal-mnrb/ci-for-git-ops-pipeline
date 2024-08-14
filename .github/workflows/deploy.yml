@@ -26,14 +26,6 @@ jobs:
         env:
           PACKAGEJSON_DIR:  'application'
 
-      - name: Commit changes
-        run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'booluat@yahoo.com'
-          git add .
-          git commit -m "Bump version to ${{ steps.bump_version.outputs.new_version }}"
-          git push
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
