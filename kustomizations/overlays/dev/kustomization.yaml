@@ -3,4 +3,4 @@ resources:
 images:
   - name: lukondefmwila/express-test
     newName: lukondefmwila/express-test
-    newTag: 1.0.10
+    newTag: 1.0.11
